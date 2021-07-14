@@ -69,8 +69,8 @@ docker push ${IMAGE_NAME}:$TAG
 # Make sure that all images contained here are pushed to github first.
 # Otherwise installation might fail.
 
-docker manifest create freqtradeorg/freqtrade:${TAG} ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:${TAG_PI}
-docker manifest push freqtradeorg/freqtrade:${TAG}
+#docker manifest create freqtradeorg/freqtrade:${TAG} ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:${TAG_PI}
+#docker manifest push freqtradeorg/freqtrade:${TAG}
 
 # Tag as latest for develop builds
 if [ "${TAG}" = "develop" ]; then
