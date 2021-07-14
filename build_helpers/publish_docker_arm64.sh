@@ -1,10 +1,13 @@
 #!/bin/sh
 
-# The below assumes a correctly setup docker buildx environment
+# Use BuildKit, otherwise building on ARM fails
+export DOCKER_BUILDKIT=1
 
 # Replace / with _ to create a valid tag
 TAG=$(echo "${BRANCH_NAME}" | sed -e "s/\//_/g")
 TAG_PLOT=${TAG}_plot
+
+
 
 echo "Running for ${TAG}"
 
