@@ -33,7 +33,7 @@ if [ $? -ne 0 ]; then
     return 1
 fi
 # Tag image for upload and next build step
-docker tag freqtrade:$TAG ${IMAGE_NAME}:$TAG
+docker tag freqtrade:$TAG_ARM ${IMAGE_NAME}:$TAG_ARM
 
 docker build --cache-from freqtrade:${TAG_ARM} --build-arg sourceimage=${TAG_ARM} -t freqtrade:${TAG_PLOT_ARM} -f docker/Dockerfile.plot .
 
