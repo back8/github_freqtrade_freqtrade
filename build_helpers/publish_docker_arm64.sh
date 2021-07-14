@@ -6,6 +6,7 @@ export DOCKER_BUILDKIT=1
 # Replace / with _ to create a valid tag
 TAG=$(echo "${BRANCH_NAME}" | sed -e "s/\//_/g")
 TAG_PLOT=${TAG}_plot
+TAG_PI="${TAG}_pi"
 
 TAG_ARM=${TAG}_arm
 TAG_PLOT_ARM=${TAG_PLOT}_arm
