@@ -60,11 +60,11 @@ docker push ${IMAGE_NAME}:$TAG_ARM
 echo "create manifests"
 
 docker manifest create --amend ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:${TAG_ARM} ${IMAGE_NAME}:${TAG_PI} ${IMAGE_NAME}:${TAG}
-docker manifest -p push ${IMAGE_NAME}:${TAG}
+docker manifest push -p ${IMAGE_NAME}:${TAG}
 
 
-docker manifest --amend create ${IMAGE_NAME}:${TAG_PLOT} ${IMAGE_NAME}:${TAG_PLOT_ARM} ${IMAGE_NAME}:${TAG_PLOT}
-docker manifest -p push ${IMAGE_NAME}:${TAG_PLOT}
+docker manifest create --amend ${IMAGE_NAME}:${TAG_PLOT} ${IMAGE_NAME}:${TAG_PLOT_ARM} ${IMAGE_NAME}:${TAG_PLOT}
+docker manifest push -p ${IMAGE_NAME}:${TAG_PLOT}
 
 # Tag as latest for develop builds
 # if [ "${TAG}" = "develop" ]; then
