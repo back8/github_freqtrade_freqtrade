@@ -57,13 +57,14 @@ docker push ${IMAGE_NAME}:$TAG_ARM
 # Create multiarch image
 # Make sure that all images contained here are pushed to github first.
 # Otherwise installation might fail.
+echo "create manifests"
 
-docker manifest create freqtradeorg/freqtrade:${TAG} freqtradeorg/freqtrade:${TAG_ARM} ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:${TAG_PI}
-docker manifest push freqtradeorg/freqtrade:${TAG}
+docker manifest create --amend ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:${TAG_ARM} ${IMAGE_NAME}:${TAG_PI} ${IMAGE_NAME}:${TAG}
+docker manifest -p push ${IMAGE_NAME}:${TAG}
 
 
-docker manifest create freqtradeorg/freqtrade:${TAG_PLOT} freqtradeorg/freqtrade:${TAG_PLOT_ARM} ${IMAGE_NAME}:${TAG}
-docker manifest push freqtradeorg/freqtrade:${TAG_PLOT}
+docker manifest --amend create ${IMAGE_NAME}:${TAG_PLOT} ${IMAGE_NAME}:${TAG_PLOT_ARM} ${IMAGE_NAME}:${TAG_PLOT}
+docker manifest -p push ${IMAGE_NAME}:${TAG_PLOT}
 
 # Tag as latest for develop builds
 # if [ "${TAG}" = "develop" ]; then
