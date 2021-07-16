@@ -10,6 +10,7 @@ TAG_PI="${TAG}_pi"
 
 TAG_ARM=${TAG}_arm
 TAG_PLOT_ARM=${TAG_PLOT}_arm
+CACHE_IMAGE=freqtradeorg/freqtrade_cache
 
 echo "Running for ${TAG}"
 
@@ -34,11 +35,11 @@ if [ $? -ne 0 ]; then
     return 1
 fi
 # Tag image for upload and next build step
-docker tag freqtrade:$TAG_ARM ${IMAGE_NAME}:$TAG_ARM
+docker tag freqtrade:$TAG_ARM ${CACHE_IMAGE}:$TAG_ARM
 
 docker build --cache-from freqtrade:${TAG_ARM} --build-arg sourceimage=${TAG_ARM} -t freqtrade:${TAG_PLOT_ARM} -f docker/Dockerfile.plot .
 
-docker tag freqtrade:$TAG_PLOT_ARM ${IMAGE_NAME}:$TAG_PLOT_ARM
+docker tag freqtrade:$TAG_PLOT_ARM ${CACHE_IMAGE}:$TAG_PLOT_ARM
 
 # Run backtest
 docker run --rm -v $(pwd)/config_bittrex.json.example:/freqtrade/config.json:ro -v $(pwd)/tests:/tests freqtrade:${TAG_ARM} backtesting --datadir /tests/testdata --strategy-path /tests/strategy/strats/ --strategy DefaultStrategy
@@ -51,26 +52,26 @@ fi
 docker images
 
 # docker push ${IMAGE_NAME}
-docker push ${IMAGE_NAME}:$TAG_PLOT_ARM
-docker push ${IMAGE_NAME}:$TAG_ARM
+docker push ${CACHE_IMAGE}:$TAG_PLOT_ARM
+docker push ${CACHE_IMAGE}:$TAG_ARM
 
 # Create multiarch image
 # Make sure that all images contained here are pushed to github first.
 # Otherwise installation might fail.
 echo "create manifests"
 
-docker manifest create --amend ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:${TAG_ARM} ${IMAGE_NAME}:${TAG_PI} ${IMAGE_NAME}:${TAG}
+docker manifest create --amend ${IMAGE_NAME}:${TAG} ${CACHE_IMAGE}:${TAG_ARM} ${IMAGE_NAME}:${TAG_PI} ${CACHE_IMAGE}:${TAG}
 docker manifest push -p ${IMAGE_NAME}:${TAG}
 
 
-docker manifest create --amend ${IMAGE_NAME}:${TAG_PLOT} ${IMAGE_NAME}:${TAG_PLOT_ARM} ${IMAGE_NAME}:${TAG_PLOT}
+docker manifest create --amend ${IMAGE_NAME}:${TAG_PLOT} ${CACHE_IMAGE}:${TAG_PLOT_ARM} ${CACHE_IMAGE}:${TAG_PLOT}
 docker manifest push -p ${IMAGE_NAME}:${TAG_PLOT}
 
-# Tag as latest for develop builds
-# if [ "${TAG}" = "develop" ]; then
-#     docker manifest create freqtradeorg/freqtrade:latest ${IMAGE_NAME}:${TAG} ${IMAGE_NAME}:${TAG_PI}
-#     docker manifest push freqtradeorg/freqtrade:latest
-# fi
+Tag as latest for develop builds
+if [ "${TAG}" = "develop" ]; then
+    docker manifest create --amend ${IMAGE_NAME}:latest ${CACHE_IMAGE}:${TAG_ARM} ${IMAGE_NAME}:${TAG_PI} ${CACHE_IMAGE}:${TAG}
+    docker manifest push -p ${IMAGE_NAME}:latest
+fi
 
 docker images
 
